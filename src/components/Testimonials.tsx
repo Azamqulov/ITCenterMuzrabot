@@ -1,71 +1,60 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Quote, Star } from 'lucide-react';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { Quote } from 'lucide-react';
 
-const testimonials = [
-  {
-    name: "Jahongir To'rayev",
-    role: "Frontend o'quvchisi",
-    text: "Markazdagi muhit juda ham zo'r. Ustozlar har bir darsni qiziqarli va tushunarli qilib o'tishadi. Men darslarni o'zlashtirishda hech qanday qiynalmadim.",
-    avatar: "JT"
-  },
-  {
-    name: "Gulnora Ergasheva",
-    role: "Dizayn o'quvchisi",
-    text: "Men oldin Photoshop ni umuman bilmasdim. Hozirda Xalqabot IT Center da o'qib, o'zimning birinchi dizaynlarimni yarata oldim. Tavsiya qilaman!",
-    avatar: "GE"
-  },
-  {
-    name: "Sirojiddin Rahmonov",
-    role: "Backend o'quvchisi",
-    text: "Markazdagi kompyuterlar juda tez va internet ham zo'r ishlaydi. Real loyihalar ustida ishlash menga juda ko'p bilim berdi.",
-    avatar: "SR"
-  }
-];
+interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  content: string;
+  avatar?: string;
+}
 
 export default function Testimonials() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'testimonials'), (snapshot) => {
+      setTestimonials(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Testimonial[]);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
+  if (loading) return null;
+  if (testimonials.length === 0) return null;
+
   return (
     <section className="py-24 bg-slate-50 overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">O'quvchilarimiz <span className="text-emerald-600">fikrlari</span></h2>
-            <p className="text-slate-500">Bizning kurslarimizni bitirgan va o'qiyotgan o'quvchilarning haqiqiy tajribalari.</p>
-          </motion.div>
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 italic">O'quvchilar <span className="text-emerald-500">Nima Deydi?</span></h2>
+          <p className="text-slate-500 max-w-2xl mx-auto">Bitiruvchilarimizning muvaffaqiyat hikoyalari va bizning markazimiz haqidagi fikrlari bilan tanishing.</p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((item, idx) => (
+          {testimonials.map((testimonial, idx) => (
             <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              key={testimonial.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.1 }}
-              className="p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm relative group hover:shadow-xl transition-all"
+              viewport={{ once: true }}
+              className="p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm relative group"
             >
-              <Quote className="absolute top-8 right-8 w-12 h-12 text-emerald-50 opacity-10 group-hover:opacity-20 transition-opacity" />
-              
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-emerald-500 text-emerald-500" />
-                ))}
-              </div>
-              
-              <p className="text-slate-600 italic mb-8 relative z-10 leading-relaxed">
-                "{item.text}"
-              </p>
+              <Quote className="absolute top-6 right-8 text-emerald-500/10 w-12 h-12" />
+              <p className="text-slate-600 mb-8 italic leading-relaxed relative z-10">"{testimonial.content}"</p>
               
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">
-                  {item.avatar}
+                <div className="w-12 h-12 rounded-full bg-emerald-500/20 border-2 border-white flex items-center justify-center font-bold text-emerald-600 uppercase">
+                  {testimonial.name.charAt(0)}
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900">{item.name}</h4>
-                  <p className="text-sm text-slate-500">{item.role}</p>
+                  <h4 className="font-bold text-slate-900">{testimonial.name}</h4>
+                  <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{testimonial.role}</p>
                 </div>
               </div>
             </motion.div>

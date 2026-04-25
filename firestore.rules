@@ -28,12 +28,27 @@ service cloud.firestore {
 
     // SiteContent Validation
     function isValidSiteContent(data) {
-      return data.keys().hasAll(['heroTitle', 'heroSubtitle', 'phone', 'telegramAdmin', 'updatedAt']) &&
+      return data.keys().hasAll(['heroTitle', 'heroSubtitle', 'heroImage', 'aboutTitle', 'aboutDescription', 'phone', 'telegramAdmin', 'telegramChatId', 'updatedAt']) &&
              data.heroTitle is string && data.heroTitle.size() <= 200 &&
-             data.heroSubtitle is string && data.heroSubtitle.size() <= 500 &&
+             data.heroSubtitle is string && data.heroSubtitle.size() <= 1000 &&
+             data.heroImage is string &&
+             data.aboutTitle is string &&
+             data.aboutDescription is string &&
              data.phone is string && data.phone.size() <= 20 &&
              data.telegramAdmin is string && data.telegramAdmin.size() <= 50 &&
              data.updatedAt == request.time;
+    }
+
+    // Course Validation
+    function isValidCourse(data) {
+      return data.keys().hasAll(['title', 'desc', 'icon', 'color']) &&
+             data.title is string && data.desc is string && data.icon is string && data.color is string;
+    }
+
+    // Testimonial Validation
+    function isValidTestimonial(data) {
+      return data.keys().hasAll(['name', 'role', 'content']) &&
+             data.name is string && data.role is string && data.content is string;
     }
 
     // Registration Rules
@@ -45,8 +60,22 @@ service cloud.firestore {
 
     // Site Config Rules
     match /config/site {
-      allow get: if true; // Publicly readable for the website
+      allow get: if true;
       allow write: if isAdmin() && isValidSiteContent(request.resource.data);
+    }
+
+    // Course Rules
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidCourse(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Testimonial Rules
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidTestimonial(request.resource.data);
+      allow delete: if isAdmin();
     }
   }
 }

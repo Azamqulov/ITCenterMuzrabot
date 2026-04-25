@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { CheckCircle2, Users, Rocket, Award } from 'lucide-react';
+import { useSiteConfig } from '../lib/useSiteConfig';
 
 const highlights = [
   {
@@ -20,6 +21,8 @@ const highlights = [
 ];
 
 export default function About() {
+  const { config, loading } = useSiteConfig();
+
   return (
     <section id="about" className="py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-6">
@@ -31,11 +34,10 @@ export default function About() {
             className="lg:w-1/2"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-8">
-              Xalqabot <span className="text-emerald-500">IT Center</span> haqida
+              {loading ? "IT Center haqida" : config.aboutTitle}
             </h2>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-              Zamonaviy IT bilimlarni o‘rgatuvchi o‘quv markazi. Tajribali ustozlar va amaliy mashg‘ulotlar orqali sizni real kasb egasiga aylantiramiz. 
-              Bizning maqsadimiz — chekka hududlarda ham zamonaviy texnologiyalarni o'zlashtirishga yordam berish.
+              {loading ? "Yuklanmoqda..." : config.aboutDescription}
             </p>
             
             <div className="space-y-4">

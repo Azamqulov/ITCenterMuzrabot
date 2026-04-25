@@ -5,23 +5,10 @@
       "description": "Student registration for IT courses.",
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string",
-          "description": "Student's name."
-        },
-        "phone": {
-          "type": "string",
-          "description": "Student's phone number."
-        },
-        "course": {
-          "type": "string",
-          "description": "Selected IT course."
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Registration timestamp."
-        }
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "course": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["name", "phone", "course", "createdAt"]
     },
@@ -32,12 +19,38 @@
       "properties": {
         "heroTitle": { "type": "string" },
         "heroSubtitle": { "type": "string" },
+        "heroImage": { "type": "string" },
+        "aboutTitle": { "type": "string" },
+        "aboutDescription": { "type": "string" },
         "phone": { "type": "string" },
         "telegramAdmin": { "type": "string" },
         "telegramChatId": { "type": "string" },
         "updatedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["heroTitle", "heroSubtitle", "phone", "telegramAdmin", "updatedAt"]
+    },
+    "Course": {
+      "title": "Course",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "desc": { "type": "string" },
+        "icon": { "type": "string" },
+        "color": { "type": "string" },
+        "order": { "type": "number" }
+      },
+      "required": ["title", "desc", "icon", "color"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "content": { "type": "string" },
+        "avatar": { "type": "string" }
+      },
+      "required": ["name", "role", "content"]
     }
   },
   "firestore": {
@@ -48,6 +61,14 @@
     "/config/site": {
       "schema": "SiteContent",
       "description": "Global configuration document for the website."
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "List of available IT courses."
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": "Testimonial",
+      "description": "Student reviews and feedback."
     }
   }
 }

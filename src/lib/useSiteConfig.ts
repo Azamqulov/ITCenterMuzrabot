@@ -5,6 +5,9 @@ import { db } from './firebase';
 export interface SiteConfig {
   heroTitle: string;
   heroSubtitle: string;
+  heroImage: string;
+  aboutTitle: string;
+  aboutDescription: string;
   phone: string;
   telegramAdmin: string;
   telegramChatId: string;
@@ -13,6 +16,9 @@ export interface SiteConfig {
 const DEFAULT_CONFIG: SiteConfig = {
   heroTitle: 'IT olamiga qadam qo‘ying!',
   heroSubtitle: 'Kompyuterni faqat ishlatish emas, pul ishlaydigan ko‘nikmaga aylantiring.',
+  heroImage: '/input_file_0.png',
+  aboutTitle: 'Xalqabot IT Center haqida',
+  aboutDescription: 'Zamonaviy IT bilimlarni o‘rgatuvchi o‘quv markazi. Tajribali ustozlar va amaliy mashg‘ulotlar orqali sizni real kasb egasiga aylantiramiz.',
   phone: '+998 77 040 46 24',
   telegramAdmin: '@ITCenter_01',
   telegramChatId: ''

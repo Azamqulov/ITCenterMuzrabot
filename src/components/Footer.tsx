@@ -1,5 +1,6 @@
 import { Instagram, Facebook, Send, Twitter } from 'lucide-react';
 import { useSiteConfig } from '../lib/useSiteConfig';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   const { config } = useSiteConfig();
@@ -61,7 +62,7 @@ export default function Footer() {
           <div className="flex items-center gap-8">
             <a href="#" className="hover:text-white transition-colors">Maxfiylik siyosati</a>
             <a href="#" className="hover:text-white transition-colors">Foydalanish shartlari</a>
-            <a href="/admin" className="opacity-20 hover:opacity-100 transition-opacity">Panel</a>
+            <Link to="/admin" className="opacity-20 hover:opacity-100 transition-opacity">Panel</Link>
           </div>
         </div>
       </div>
