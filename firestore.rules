@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common Helpers
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && (
+        request.auth.token.email == "qrolsher07@gmail.com" && 
+        request.auth.token.email_verified == true
+      ); 
+    }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    // Registration Validation
+    function isValidRegistration(data) {
+      return data.keys().hasAll(['name', 'phone', 'course', 'createdAt']) &&
+             data.keys().size() == 4 &&
+             data.name is string && data.name.size() >= 2 && data.name.size() <= 100 &&
+             data.phone is string && data.phone.size() >= 9 && data.phone.size() <= 20 &&
+             data.course is string && data.course.size() >= 2 && data.course.size() <= 100 &&
+             data.createdAt == request.time;
+    }
+
+    // SiteContent Validation
+    function isValidSiteContent(data) {
+      return data.keys().hasAll(['heroTitle', 'heroSubtitle', 'phone', 'telegramAdmin', 'updatedAt']) &&
+             data.heroTitle is string && data.heroTitle.size() <= 200 &&
+             data.heroSubtitle is string && data.heroSubtitle.size() <= 500 &&
+             data.phone is string && data.phone.size() <= 20 &&
+             data.telegramAdmin is string && data.telegramAdmin.size() <= 50 &&
+             data.updatedAt == request.time;
+    }
+
+    // Registration Rules
+    match /registrations/{registrationId} {
+      allow create: if isValidRegistration(request.resource.data);
+      allow read: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Site Config Rules
+    match /config/site {
+      allow get: if true; // Publicly readable for the website
+      allow write: if isAdmin() && isValidSiteContent(request.resource.data);
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Registration": {
+      "title": "Registration",
+      "description": "Student registration for IT courses.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Student's name."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Student's phone number."
+        },
+        "course": {
+          "type": "string",
+          "description": "Selected IT course."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Registration timestamp."
+        }
+      },
+      "required": ["name", "phone", "course", "createdAt"]
+    },
+    "SiteContent": {
+      "title": "SiteContent",
+      "description": "Configuration data for the website content.",
+      "type": "object",
+      "properties": {
+        "heroTitle": { "type": "string" },
+        "heroSubtitle": { "type": "string" },
+        "phone": { "type": "string" },
+        "telegramAdmin": { "type": "string" },
+        "telegramChatId": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["heroTitle", "heroSubtitle", "phone", "telegramAdmin", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": "Registration",
+      "description": "Collection of student registrations."
+    },
+    "/config/site": {
+      "schema": "SiteContent",
+      "description": "Global configuration document for the website."
+    }
+  }
+}
